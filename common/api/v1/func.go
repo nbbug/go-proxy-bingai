@@ -23,18 +23,20 @@ func init() {
 		common.Logger.Info("APIKEY: %s", apikey)
 	}
 	go func() {
+		globalChat = binglib.NewChat("").SetBingBaseUrl("http://localhost:" + common.PORT).SetSydneyBaseUrl("ws://localhost:" + common.PORT).SetBypassServer(common.BypassServer)
+		globalImage = binglib.NewImage("").SetBingBaseUrl("http://localhost:" + common.PORT).SetBypassServer(common.BypassServer)
 		time.Sleep(200 * time.Millisecond)
 		t, _ := getCookie("", "", "")
 		common.Logger.Info("BingAPI Ready!")
-		globalChat = binglib.NewChat(t).SetBingBaseUrl("http://localhost:" + common.PORT).SetSydneyBaseUrl("ws://localhost:" + common.PORT).SetBypassServer(common.BypassServer)
-		globalImage = binglib.NewImage(t).SetBingBaseUrl("http://localhost:" + common.PORT).SetBypassServer(common.BypassServer)
+		globalChat.SetCookies(t)
+		globalImage.SetCookies(t)
 	}()
 }
 
 func getCookie(reqCookie, convId, rid string) (cookie string, err error) {
 	cookie = reqCookie
-	if common.AUTH_KEY != "" {
-		cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEY
+	if len(common.AUTH_KEYS) > 0 {
+		cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEYS[0]
 	}
 	c := request.NewRequest()
 	res := c.SetUrl("http://localhost:"+common.PORT+"/chat?q=Bing+AI&showconv=1&FORM=hpcodx&ajaxhist=0&ajaxserp=0&cc=us").
@@ -54,7 +56,7 @@ func getCookie(reqCookie, convId, rid string) (cookie string, err error) {
 	if err != nil {
 		return
 	}
-	resp, status, err := binglib.Bypass(common.BypassServer, reqCookie, "local-gen-"+hex.NewUUID(), IG, convId, rid, T)
+	resp, status, err := binglib.Bypass(common.BypassServer, reqCookie, "local-gen-"+hex.NewUUID(), IG, convId, rid, T, "")
 	if err != nil || status != http.StatusOK {
 		common.Logger.Error("Bypass Error: %v", err)
 		return
@@ -63,8 +65,10 @@ func getCookie(reqCookie, convId, rid string) (cookie string, err error) {
 	if len(common.USER_TOKEN_LIST) == 0 {
 		cookie += "; _U=" + hex.NewHex(128)
 	}
-	if common.AUTH_KEY != "" {
-		cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEY
+	if len(common.AUTH_KEYS) > 0 {
+		if common.AUTH_KEYS[0] != "" {
+			cookie += "; " + common.AUTH_KEY_COOKIE_NAME + "=" + common.AUTH_KEYS[0]
+		}
 	}
 	return cookie, nil
 }

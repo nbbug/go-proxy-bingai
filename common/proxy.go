@@ -163,6 +163,22 @@ func NewSingleHostReverseProxy(target *url.URL) *httputil.ReverseProxy {
 			// }
 		}
 
+		cookies := req.Cookies()
+		for i, cookie := range cookies {
+			// 删除 `BingAI_Rand_IP` Cookie, 以使用多语种问答
+			if cookie.Name == RAND_IP_COOKIE_NAME {
+				// 删除切片中的元素
+				cookies = append(cookies[:i], cookies[i+1:]...)
+				break
+			}
+		}
+
+		// 重新设置 Cookie 头
+		req.Header.Del("Cookie")
+		for _, cookie := range cookies {
+			req.AddCookie(cookie)
+		}
+
 		ua := req.UserAgent()
 		isMobile := strings.Contains(ua, "Mobile") || strings.Contains(ua, "Android")
 
@@ -348,7 +364,7 @@ func replaceResBody(originalBody string, originalScheme string, originalHost str
 	} else {
 		originalDomain := fmt.Sprintf("%s://%s", originalScheme, originalHost)
 		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_URL.String(), originalDomain)
-		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, EDGE_SVC_URL.Host, originalHost)
+		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, EDGE_SVC_URL.Host, originalDomain)
 		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_SR_URT.String(), originalDomain)
 		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, BING_SOURCE_URL.String(), originalDomain+"/th")
 		modifiedBodyStr = strings.ReplaceAll(modifiedBodyStr, DISIGNER_CDN_URL.String(), originalDomain+"/designer/cdn")

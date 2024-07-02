@@ -50,6 +50,10 @@
 >
 > [![Vercel 部署](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FHarry-zklcdc%2Fgo-proxy-bingai&env=BYPASS_SERVER&project-name=go-proxy-bingai&repository-name=go-proxy-bingai)
 
+> #### Zeabur 部署
+>
+> [![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/ZBA4SF)
+
 > #### Glitch 部署
 >
 > [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/import/github/Harry-zklcdc/go-proxy-bingai-glitch)
@@ -77,6 +81,8 @@
 ✅ 一键登录
 
 ✅ 登录账号支持画图
+
+✅ 支持侧边栏聊天和撰写 - [Chrome插件](https://github.com/Harry-zklcdc/bingai-sidebar-chrome)
 
 ✅ 支持 OpenAI 格式 API 调用 - [📝 Wiki文档](https://github.com/Harry-zklcdc/go-proxy-bingai/wiki/BingAPI)
 
